@@ -1,0 +1,1709 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HPCL - रिटेल आउटलेट सुरक्षा जांच सूची</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans Devanagari', Arial, sans-serif;
+            background: linear-gradient(135deg, #e31e24 0%, #ff6b6b 100%);
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .header {
+            background: white;
+            padding: 20px;
+            border-bottom: 4px solid #e31e24;
+            text-align: center;
+        }
+
+        .logo-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .hp-logo {
+            width: 70px;
+            height: 70px;
+            background: #e31e24;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.8em;
+            padding: 10px;
+        }
+
+        .hp-text {
+            font-size: 0.5em;
+            margin-top: 5px;
+        }
+
+        .header h1 {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .header h2 {
+            font-size: 1.1em;
+            color: #666;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        .live-monitoring {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 20px;
+            border-radius: 8px;
+        }
+
+        .live-monitoring h3 {
+            color: #856404;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .live-indicator {
+            width: 12px;
+            height: 12px;
+            background: #28a745;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .live-monitoring p {
+            color: #856404;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .waiting-timer-section {
+            padding: 25px;
+            background: white;
+            border-top: 2px solid #dee2e6;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .waiting-timer-box {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffe69c 100%);
+            border: 3px solid #ffc107;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .waiting-timer-box h3 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .waiting-instruction {
+            color: #856404;
+            margin-bottom: 20px;
+            line-height: 1.8;
+            font-size: 1em;
+        }
+
+        .waiting-instruction strong {
+            color: #dc3545;
+            font-size: 1.2em;
+        }
+
+        .countdown-timer {
+            margin: 25px 0;
+        }
+
+        .countdown-display {
+            font-size: 4em;
+            font-weight: bold;
+            color: #e31e24;
+            font-family: 'Courier New', monospace;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 10px;
+        }
+
+        .countdown-display.complete {
+            color: #28a745;
+            animation: pulseGreen 1s infinite;
+        }
+
+        @keyframes pulseGreen {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .countdown-label {
+            color: #666;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .timer-progress-bar {
+            height: 30px;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+            border: 2px solid #ffc107;
+        }
+
+        .timer-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745 0%, #20c997 100%);
+            width: 0%;
+            transition: width 1s linear;
+        }
+
+        .btn-start-timer {
+            padding: 15px 40px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: 'Noto Sans Devanagari', Arial;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .btn-start-timer:hover:not(:disabled) {
+            background: #218838;
+            transform: scale(1.05);
+        }
+
+        .btn-start-timer:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .timer-status {
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .timer-status.waiting {
+            color: #e31e24;
+        }
+
+        .timer-status.complete {
+            color: #28a745;
+        }
+
+        .checklist-section.locked {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .locked-overlay {
+            background: rgba(227, 30, 36, 0.1);
+            border: 3px dashed #e31e24;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .locked-overlay h4 {
+            color: #e31e24;
+            margin-bottom: 10px;
+        }
+
+        .locked-overlay p {
+            color: #666;
+        }
+
+        .info-section {
+            padding: 20px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .info-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-field label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        .info-field input {
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: 'Noto Sans Devanagari', Arial;
+        }
+
+        .info-field input:focus {
+            outline: none;
+            border-color: #e31e24;
+            box-shadow: 0 0 0 3px rgba(227, 30, 36, 0.1);
+        }
+
+        .checklist-section {
+            padding: 20px;
+        }
+
+        .section-header {
+            background: #343a40;
+            color: white;
+            padding: 12px 20px;
+            font-weight: 600;
+            font-size: 1.05em;
+            margin: 0 -20px 15px -20px;
+        }
+
+        .check-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #dee2e6;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .check-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .check-item.checked {
+            background: #d4edda;
+            border-left-color: #28a745;
+        }
+
+        .check-item.locked {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .check-icon {
+            font-size: 1.8em;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .check-number {
+            min-width: 35px;
+            height: 35px;
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #666;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .check-item.checked .check-number {
+            background: #28a745;
+            border-color: #28a745;
+            color: white;
+        }
+
+        .check-number::after {
+            content: attr(data-number);
+        }
+
+        .check-item.checked .check-number::after {
+            content: '✓';
+        }
+
+        .check-content {
+            flex: 1;
+        }
+
+        .check-text {
+            color: #333;
+            line-height: 1.6;
+            font-size: 0.95em;
+            font-weight: 600;
+        }
+
+        .check-english {
+            color: #6c757d;
+            font-size: 0.85em;
+            font-style: italic;
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+
+        .timestamp {
+            font-size: 0.75em;
+            color: #28a745;
+            margin-top: 5px;
+            font-weight: 600;
+        }
+
+        .check-status {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 5px;
+        }
+
+        .yes-no-btns {
+            display: flex;
+            gap: 10px;
+        }
+
+        .yes-btn, .no-btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .yes-btn {
+            background: #28a745;
+            color: white;
+        }
+
+        .yes-btn:hover {
+            background: #218838;
+        }
+
+        .no-btn {
+            background: #dc3545;
+            color: white;
+        }
+
+        .no-btn:hover {
+            background: #c82333;
+        }
+
+        .yes-btn:disabled, .no-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .timer-display {
+            font-size: 0.8em;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .signature-section {
+            padding: 20px;
+            background: #f8f9fa;
+            border-top: 2px solid #dee2e6;
+        }
+
+        .photo-upload-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .photo-upload-box {
+            border: 2px dashed #dee2e6;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            background: white;
+        }
+
+        .photo-upload-box label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+        }
+
+        .photo-upload-box input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 0.85em;
+            cursor: pointer;
+        }
+
+        .photo-preview {
+            margin-top: 10px;
+            min-height: 150px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .photo-preview img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+        }
+
+        .photo-preview.empty::before {
+            content: '📷';
+            font-size: 3em;
+            opacity: 0.3;
+        }
+
+        .photo-timestamp {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.7em;
+            font-weight: bold;
+        }
+
+        .photo-gps {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background: rgba(40, 167, 69, 0.9);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.7em;
+            font-weight: bold;
+        }
+
+        .signature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .signature-box {
+            border: 2px dashed #dee2e6;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .signature-box label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .signature-box input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            text-align: center;
+            font-family: 'Noto Sans Devanagari', Arial;
+        }
+
+        .action-buttons {
+            padding: 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            background: white;
+        }
+
+        .btn {
+            flex: 1;
+            min-width: 150px;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Noto Sans Devanagari', Arial;
+        }
+
+        .btn-submit {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .btn-submit:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+        }
+
+        .btn-whatsapp:hover:not(:disabled) {
+            background: #1da851;
+            transform: translateY(-2px);
+        }
+
+        .btn-whatsapp:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .btn-print {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-print:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .btn-export {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-export:hover {
+            background: #138496;
+            transform: translateY(-2px);
+        }
+
+        .progress-tracker {
+            padding: 20px;
+            background: white;
+            border-top: 2px solid #dee2e6;
+        }
+
+        .progress-bar {
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .modal-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .modal h2 {
+            color: #28a745;
+            margin-bottom: 15px;
+        }
+
+        .modal p {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .modal-btn {
+            padding: 12px 30px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: 'Noto Sans Devanagari', Arial;
+            margin: 5px;
+        }
+
+        .modal-btn:hover {
+            background: #218838;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 15px 20px;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border-left: 4px solid #ffc107;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+                max-width: 100%;
+            }
+
+            .action-buttons, .live-monitoring, .waiting-timer-section {
+                display: none !important;
+            }
+
+            .yes-no-btns {
+                display: none !important;
+            }
+
+            .locked-overlay {
+                display: none !important;
+            }
+
+            .photo-upload-grid {
+                display: none !important;
+            }
+
+            .photo-preview {
+                display: none !important;
+            }
+
+            input[type="file"] {
+                display: none !important;
+            }
+
+            .header {
+                border-bottom: 3px solid #000;
+                page-break-after: avoid;
+            }
+
+            .hp-logo {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .section-header {
+                background: #f0f0f0 !important;
+                color: #000 !important;
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+                page-break-after: avoid;
+            }
+
+            .check-item {
+                page-break-inside: avoid;
+                border: 1px solid #ddd;
+                margin-bottom: 8px;
+            }
+
+            .check-item.checked {
+                background: #e8f5e9 !important;
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .check-icon {
+                display: inline-block;
+            }
+
+            .check-english {
+                display: block !important;
+            }
+
+            .timestamp {
+                display: block !important;
+                color: #000 !important;
+                font-weight: bold;
+            }
+
+            .progress-tracker {
+                border: 1px solid #000;
+                page-break-inside: avoid;
+            }
+
+            .signature-section {
+                page-break-before: avoid;
+                border-top: 2px solid #000;
+            }
+
+            .signature-box {
+                border: 2px solid #000;
+            }
+
+            .info-section {
+                background: #f9f9f9 !important;
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+
+            /* Add print header and footer */
+            @page {
+                margin: 1.5cm;
+            }
+
+            h1, h2, h3 {
+                page-break-after: avoid;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .info-grid, .signature-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <div class="modal-icon">✅</div>
+            <h2>चेकलिस्ट सफलतापूर्वक जमा हुई!</h2>
+            <p><strong>संदर्भ संख्या:</strong> <span id="referenceId"></span></p>
+            <p>सभी जांच पूर्ण हो गई है और टाइमस्टैम्प रिकॉर्ड किया गया है।</p>
+            <button class="modal-btn" onclick="printChecklist()">प्रिंट करें</button>
+            <button class="modal-btn" onclick="closeModal()">बंद करें</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <div class="logo-header">
+                <div class="hp-logo">
+                    HP
+                    <div class="hp-text">हिन्दुस्तान पेट्रोलियम</div>
+                </div>
+                <div>
+                    <h1>हिन्दुस्तान पेट्रोलियम कॉर्पोरेशन लिमिटेड</h1>
+                    <h2>वार्षिक क्षेत्रीय कार्यालय</h2>
+                    <p>रिटेल आउटलेट पर टैंक अनलोडिंग के लिए सुरक्षा जांच सूची</p>
+                    <p style="font-size: 0.85em; margin-top: 5px;">(उत्पाद अनलोडिंग के समय उपयोग किया जाए)</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="live-monitoring">
+            <h3>
+                <span class="live-indicator"></span>
+                लाइव मॉनिटरिंग सक्रिय
+            </h3>
+            <p><strong>⚠️ महत्वपूर्ण:</strong> प्रत्येक जांच को वास्तविक समय में पूरा किया जाना चाहिए। हर चेक के साथ टाइमस्टैम्प रिकॉर्ड होगा। बाद में भरने की अनुमति नहीं है। सभी जांच क्रमानुसार होनी चाहिए।</p>
+        </div>
+
+        <div id="alertBox" class="alert"></div>
+
+        <div class="info-section">
+            <div class="info-grid">
+                <div class="info-field">
+                    <label>आउटलेट का नाम *</label>
+                    <input type="text" id="outletName" placeholder="आउटलेट का नाम दर्ज करें">
+                </div>
+                <div class="info-field">
+                    <label>हवाइवाउंस नं. *</label>
+                    <input type="text" id="invoiceNo" placeholder="हवाइवाउंस नं.">
+                </div>
+                <div class="info-field">
+                    <label>दिनांक *</label>
+                    <input type="date" id="date" readonly>
+                </div>
+                <div class="info-field">
+                    <label>क्र.सं. *</label>
+                    <input type="text" id="serialNo" placeholder="क्रमांक संख्या">
+                </div>
+                <div class="info-field">
+                    <label>चालान समय / Challan Time *</label>
+                    <input type="time" id="challanTime" placeholder="चालान समय">
+                </div>
+                <div class="info-field">
+                    <label>टैंकर आगमन समय / Tanker Arrival Time *</label>
+                    <input type="time" id="arrivalTime" readonly>
+                </div>
+            </div>
+        </div>
+
+        <div class="waiting-timer-section" id="waitingTimerSection">
+            <div class="waiting-timer-box">
+                <h3>⏱️ अनिवार्य प्रतीक्षा समय / Mandatory Waiting Period</h3>
+                <p class="waiting-instruction">
+                    टैंक को स्थिर होने के लिए <strong>10 मिनट</strong> प्रतीक्षा करें<br>
+                    <em>Wait 10 minutes for tank to settle before starting decantation</em>
+                </p>
+                <div class="countdown-timer">
+                    <div class="countdown-display" id="countdownDisplay">10:00</div>
+                    <div class="countdown-label">शेष समय / Remaining Time</div>
+                </div>
+                <div class="timer-progress-bar">
+                    <div class="timer-progress-fill" id="timerProgressFill"></div>
+                </div>
+                <button class="btn-start-timer" id="startTimerBtn" onclick="startWaitingTimer()">
+                    प्रतीक्षा समय प्रारंभ करें / Start Waiting Timer
+                </button>
+                <div class="timer-status" id="timerStatus"></div>
+            </div>
+        </div>
+
+        <div class="progress-tracker">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%">0%</div>
+            </div>
+            <div class="progress-stats">
+                <span><strong>पूर्ण:</strong> <span id="completedCount">0</span> / <span id="totalCount">0</span></span>
+                <span><strong>समय:</strong> <span id="elapsedTime">00:00:00</span></span>
+            </div>
+        </div>
+
+        <div class="checklist-section">
+            <div class="section-header">प्री-डीकैन्टेशन जांच</div>
+            <div id="preDecantChecks"></div>
+        </div>
+
+        <div class="checklist-section">
+            <div class="section-header">प्री-डीकैन्टेशन संपर्क कहीवाहन</div>
+            <div id="contactChecks"></div>
+        </div>
+
+        <div class="checklist-section">
+            <div class="section-header">डीकैन्टेशन</div>
+            <div id="decantChecks"></div>
+        </div>
+
+        <div class="checklist-section">
+            <div class="section-header">पोस्ट डीकैन्टेशन</div>
+            <div id="postDecantChecks"></div>
+        </div>
+
+        <div class="signature-section">
+            <div class="section-title">
+                <span class="section-icon">📸</span>
+                फोटो साक्ष्य / Photo Evidence (Required)
+            </div>
+            
+            <div class="photo-upload-grid">
+                <div class="photo-upload-box">
+                    <label>टैंकर आगमन फोटो / Tanker Arrival Photo *</label>
+                    <input type="file" id="tankerPhoto" accept="image/*" capture="environment" onchange="handlePhotoUpload('tankerPhoto', 'tankerPreview')">
+                    <div class="photo-preview" id="tankerPreview"></div>
+                </div>
+                
+                <div class="photo-upload-box">
+                    <label>सील नंबर फोटो / Seal Number Photo *</label>
+                    <input type="file" id="sealPhoto" accept="image/*" capture="environment" onchange="handlePhotoUpload('sealPhoto', 'sealPreview')">
+                    <div class="photo-preview" id="sealPreview"></div>
+                </div>
+                
+                <div class="photo-upload-box">
+                    <label>डीकैन्टेशन प्रक्रिया फोटो / Decantation Process Photo *</label>
+                    <input type="file" id="processPhoto" accept="image/*" capture="environment" onchange="handlePhotoUpload('processPhoto', 'processPreview')">
+                    <div class="photo-preview" id="processPreview"></div>
+                </div>
+                
+                <div class="photo-upload-box">
+                    <label>पूर्ण कार्य फोटो / Completion Photo *</label>
+                    <input type="file" id="completionPhoto" accept="image/*" capture="environment" onchange="handlePhotoUpload('completionPhoto', 'completionPreview')">
+                    <div class="photo-preview" id="completionPreview"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="signature-section">
+            <div class="section-title">
+                <span class="section-icon">✍️</span>
+                हस्ताक्षर और पुष्टि / Signatures & Acknowledgment
+            </div>
+            <div class="signature-grid">
+                <div class="signature-box">
+                    <label>टैंक ड्राइवर का नाम</label>
+                    <input type="text" id="driverName" placeholder="नाम दर्ज करें">
+                    <label style="margin-top: 10px;">एवं हस्ताक्षर</label>
+                    <input type="text" id="driverSign" placeholder="हस्ताक्षर">
+                </div>
+                <div class="signature-box">
+                    <label>डीलर / डीलरमैन का नाम</label>
+                    <input type="text" id="dealerName" placeholder="नाम दर्ज करें">
+                    <label style="margin-top: 10px;">एवं हस्ताक्षर</label>
+                    <input type="text" id="dealerSign" placeholder="हस्ताक्षर">
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-submit" id="submitBtn" onclick="submitChecklist()">चेकलिस्ट जमा करें</button>
+            <button class="btn btn-whatsapp" onclick="shareViaWhatsApp()" id="whatsappBtn" disabled>
+                📱 WhatsApp पर भेजें
+            </button>
+            <button class="btn btn-print" onclick="printChecklist()">प्रिंट करें</button>
+            <button class="btn btn-export" onclick="exportData()">डेटा एक्सपोर्ट करें</button>
+        </div>
+    </div>
+
+    <script>
+        const checklistData = {
+            preDecant: [
+                { text: "टैंकी के ड्राइव आउट स्थिति में होना सुनिश्चित करें", en: "Ensure tanker is in drive-out position", icon: "🚛" },
+                { text: "पहिया को चॉक लगाएं", en: "Apply wheel chocks", icon: "⚙️" },
+                { text: "अवरोध (Baricading) लगाकर टैंकी डीकैन्टेशन क्षेत्र को फेर ले", en: "Barricade decantation area", icon: "🚧" },
+                { text: "टैंकी को स्थिर होने के लिए १० मिनट दें", en: "Wait 10 minutes for tank to settle", icon: "⏱️" },
+                { text: "टैंकी के आसपास कम से कम 2 No. 10 Kg. DCP अग्निशमन यंत्र व 4 फायर बकेट रखें", en: "Keep 2x10kg DCP & 4 fire buckets", icon: "🧯" },
+                { text: "टैंकी चालित को अग्नि प्रसाद करें", en: "Ground/Earth the tanker", icon: "🔌" },
+                { text: "मैनीफोल्ड वेल्व का साइलेंट एवं लॉकिंग सिस्टम चेक करें", en: "Check manifold valve sealing & locking", icon: "🔧" },
+                { text: "मास्टर वेल्व का साइलेंट चेक कर उसे लिलिज़ करें", en: "Check & release master valve seal", icon: "🔓" },
+                { text: "टैंकी पर चढ़ने के पहले एक्सएसएल्ब द्वारा सुरक्षा हेल्मेट पहनना सुनिश्चित करें", en: "Wear safety helmet before climbing", icon: "⛑️" },
+                { text: "डॉम कवर एवं लॉकिंग एवं साइलेंट को जांच करें", en: "Check dome cover, locking & sealing", icon: "🔒" },
+                { text: "स्तर: डिप शुद्धिकरण करें एवं इन्वाइंस से मेच करें", en: "Take dip reading & match with invoice", icon: "📏" },
+                { text: "उत्पाद कम होने पर एवं पानी की उपस्थिति होने पर आपूर्ति कार्यस्थल को सूचना दें", en: "Inform if product short or water present", icon: "⚠️" },
+                { text: "टैंक के अनुसार उत्पाद का घनत्व जांच कर इन्वाइंस से मेल करें", en: "Check product density per tank & match invoice", icon: "🌡️" },
+                { text: "डीकैन्टेशन के समय तेल के नीचे टैंक से जुड़े डीप से चिको बंद कराएं", en: "Close bottom dip during decantation", icon: "🔴" },
+                { text: "तेल के नीचे का डिप वेल्व बंद करें", en: "Close bottom dip valve", icon: "⭕" },
+                { text: "होज़ एवं टैंकी के पास 'टैंकी डीकैन्टेशन के तहत' का बोर्ड लगाएं", en: "Display 'Tank Decantation in Progress' board", icon: "📋" }
+            ],
+            contact: [
+                { text: "उत्पाद से अत्युनीतिन कस्टरे को फेंके", en: "Drain excess product from container", icon: "💧" },
+                { text: "कम्पार्टमेंट से २० ली. उत्पाद निकालने के बाद, संमपल जमा करें", en: "Collect sample after draining 20L from compartment", icon: "🧪" },
+                { text: "एम एस / पावर हुई ४ X १ ली. संमपल", en: "MS/Petrol: 4x1L samples", icon: "⛽" },
+                { text: "एच एस डी / टका हुई ४ X १ ली. संमपल", en: "HSD/Diesel: 4x1L samples", icon: "🛢️" },
+                { text: "अत्युनीतिम कन्टेनर में रिसाव हुई जांच करें", en: "Check container for leakage", icon: "🔍" },
+                { text: "संमपल सील एवं लकड़ी के बॉक्स को एम०एस०सी०एल० प्लास्टिक सील से सील करें", en: "Seal sample box with MSCL plastic seal", icon: "🏷️" },
+                { text: "संमपल कन्टेनर को रिसाव के लिए जांच कर चिल करें", en: "Check sample container for leaks & seal", icon: "✅" },
+                { text: "लकड़ी के बॉक्स पर डीलर एवं टैंकी ड्राइवर से हस्ताक्षरित संमपल लवल चिपकाएं", en: "Affix signed sample label on wooden box", icon: "📝" },
+                { text: "पर्यवर्डी विस्टोलेटर पुलने निर्देश स्थान पर संमपल रखें", en: "Keep sample at designated location", icon: "📦" }
+            ],
+            decant: [
+                { text: "वेउडेड होस को अण्डरग्राउण्ड टैंक से टाइटली जॉड़ रखें", en: "Connect bonded hose tightly to underground tank", icon: "🔗" },
+                { text: "होना / कॅरेलेना से रिसाव न होना सुनिश्चित करें", en: "Ensure no leakage from hose/coupling", icon: "❌" },
+                { text: "टैंकी कार्गो के समय डीकैन्विटि करें", en: "Monitor during decantation", icon: "👁️" },
+                { text: "बन्द पाइप का सही कार्य करना सुनिश्चित करें", en: "Ensure proper functioning of vent pipe", icon: "🌬️" },
+                { text: "दुर्रु रुप से उत्पाद चेक कर एवं टैंकी कम्पार्टमेंट को चिप रोड़ से चेक करें", en: "Check product visually & verify compartment by dip rod", icon: "👀" }
+            ],
+            postDecant: [
+                { text: "मैनीफोल्ड वेल्व एवं मास्टर वेल्व को बंद करें", en: "Close manifold & master valves", icon: "🔒" },
+                { text: "डिसाइलेंशी कन्टेनर के मेङ्किट को सुरक्षित पुजी टैंक में डालो करें", en: "Pour drip container content safely into tank", icon: "⬇️" },
+                { text: "छलकने से बचने हेतु कार्गेना साबधानी से निकालें", en: "Remove hose carefully to avoid spillage", icon: "⚠️" },
+                { text: "'टैंकी डीकैन्टेशन के तहत' का बोर्ड, चॉकिंग, अवरोध निकाल दें", en: "Remove board, chocking & barricades", icon: "🚫" },
+                { text: "फायर बकेट एवं पहिला को सही निकाले दें", en: "Remove fire buckets & wheel chocks properly", icon: "🧯" },
+                { text: "सुनिश्चित करें कि डॉम कवर और वेल्व पर सुरक्षा लॉक लगा है", en: "Ensure dome cover & valves are security locked", icon: "🔐" },
+                { text: "प्रिन्टर की अग्निशमनी एवं हस्ताक्षर टैंकी ड्राइवर एवं डीलर द्वारा किया जाए", en: "Printer acknowledgment signed by driver & dealer", icon: "✍️" },
+                { text: "टैंकी डीकैन्टेशन चेक लिस्ट पर हस्ताक्षर करें उसे टैंकी ड्राइवर को सौंप दें", en: "Sign checklist & handover to driver", icon: "📄" }
+            ]
+        };
+
+        let checkStates = {};
+        let checkTimestamps = {};
+        let startTime = Date.now();
+        let currentCheckIndex = 0;
+        let totalChecks = 0;
+        let waitingTimerInterval = null;
+        let waitingComplete = false;
+        let waitingStartTime = null;
+        const WAITING_DURATION = 10 * 60; // 10 minutes in seconds
+        let uploadedPhotos = {};
+        let gpsLocation = null;
+        let sessionId = null;
+        let pageLoadTime = Date.now();
+
+        // Anti-tampering: Detect time manipulation
+        function detectTimeManipulation() {
+            const now = Date.now();
+            const elapsed = now - pageLoadTime;
+            
+            // Check if time jumped backwards or forward suspiciously
+            if (elapsed < 0 || elapsed > (2 * 60 * 60 * 1000)) { // More than 2 hours
+                showAlert('⚠️ समय में हेरफेर का पता चला! / Time manipulation detected!', 'danger');
+                return true;
+            }
+            return false;
+        }
+
+        // Generate unique session ID
+        function generateSessionId() {
+            return 'HPCL-SESSION-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // Get GPS location
+        function getGPSLocation() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        gpsLocation = {
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude,
+                            accuracy: position.coords.accuracy,
+                            timestamp: new Date().toISOString()
+                        };
+                        console.log('GPS Location captured:', gpsLocation);
+                    },
+                    (error) => {
+                        console.log('GPS not available:', error);
+                    }
+                );
+            }
+        }
+
+        // Handle photo upload with timestamp and GPS
+        function handlePhotoUpload(inputId, previewId) {
+            const input = document.getElementById(inputId);
+            const preview = document.getElementById(previewId);
+            const file = input.files[0];
+
+            if (file) {
+                // Check file size (max 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    showAlert('फोटो का आकार 5MB से कम होना चाहिए! / Photo size must be less than 5MB!', 'danger');
+                    input.value = '';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const timestamp = new Date().toLocaleString('hi-IN');
+                    
+                    // Create image preview with timestamp
+                    preview.innerHTML = `
+                        <img src="${e.target.result}" alt="Photo">
+                        <div class="photo-timestamp">📅 ${timestamp}</div>
+                        ${gpsLocation ? `<div class="photo-gps">📍 GPS</div>` : ''}
+                    `;
+                    preview.classList.remove('empty');
+
+                    // Store photo data
+                    uploadedPhotos[inputId] = {
+                        data: e.target.result,
+                        timestamp: new Date().toISOString(),
+                        gps: gpsLocation,
+                        filename: file.name,
+                        size: file.size
+                    };
+
+                    updateSubmitButton();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Check if all required photos uploaded
+        function allPhotosUploaded() {
+            const requiredPhotos = ['tankerPhoto', 'sealPhoto', 'processPhoto', 'completionPhoto'];
+            return requiredPhotos.every(id => uploadedPhotos[id]);
+        }
+
+        // WhatsApp share function
+        function shareViaWhatsApp() {
+            if (!validateForm() || Object.keys(checkStates).length !== totalChecks) {
+                showAlert('कृपया पहले चेकलिस्ट पूर्ण करें! / Please complete checklist first!', 'danger');
+                return;
+            }
+
+            // Create summary text
+            const summary = `
+*HPCL टैंक डीकैन्टेशन चेकलिस्ट*
+*Tank Decantation Checklist*
+
+📋 *विवरण / Details:*
+• आउटलेट: ${document.getElementById('outletName').value}
+• हवाइवाउंस: ${document.getElementById('invoiceNo').value}
+• दिनांक: ${document.getElementById('date').value}
+• चालान समय: ${document.getElementById('challanTime').value}
+• आगमन समय: ${document.getElementById('arrivalTime').value}
+
+✅ *पूर्ण जांच / Completed Checks:*
+• प्री-डीकैन्टेशन: ${checklistData.preDecant.length}/${checklistData.preDecant.length}
+• संपर्क कहीवाहन: ${checklistData.contact.length}/${checklistData.contact.length}
+• डीकैन्टेशन: ${checklistData.decant.length}/${checklistData.decant.length}
+• पोस्ट डीकैन्टेशन: ${checklistData.postDecant.length}/${checklistData.postDecant.length}
+
+📸 *फोटो साक्ष्य / Photo Evidence:*
+• ${Object.keys(uploadedPhotos).length}/4 फोटो अपलोड
+
+✍️ *हस्ताक्षर / Signatures:*
+• ड्राइवर: ${document.getElementById('driverName').value}
+• डीलर: ${document.getElementById('dealerName').value}
+
+⏱️ *कुल समय / Total Time:* ${document.getElementById('elapsedTime').textContent}
+
+${gpsLocation ? `📍 *GPS Location:*\nLat: ${gpsLocation.latitude.toFixed(6)}, Lng: ${gpsLocation.longitude.toFixed(6)}` : ''}
+
+🔒 *सत्यापित / Verified:* ${new Date().toLocaleString('hi-IN')}
+
+_यह एक स्वचालित रूप से जेनरेट की गई रिपोर्ट है_
+_This is an auto-generated report_
+            `.trim();
+
+            // Encode for WhatsApp
+            const encodedText = encodeURIComponent(summary);
+            
+            // WhatsApp URL
+            const whatsappUrl = `https://wa.me/?text=${encodedText}`;
+            
+            // Open WhatsApp
+            window.open(whatsappUrl, '_blank');
+            
+            showAlert('✅ WhatsApp खोला जा रहा है... / Opening WhatsApp...', 'success');
+        }
+
+        function initializeChecklist() {
+            // Generate session ID
+            sessionId = generateSessionId();
+            console.log('Session ID:', sessionId);
+
+            // Try to get GPS location
+            getGPSLocation();
+
+            // Set today's date
+            document.getElementById('date').valueAsDate = new Date();
+            
+            // Set arrival time to now
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('arrivalTime').value = `${hours}:${minutes}`;
+
+            // Initialize photo previews as empty
+            ['tankerPreview', 'sealPreview', 'processPreview', 'completionPreview'].forEach(id => {
+                document.getElementById(id).classList.add('empty');
+            });
+
+            // Initialize all sections
+            renderSection('preDecant', 'preDecantChecks');
+            renderSection('contact', 'contactChecks');
+            renderSection('decant', 'decantChecks');
+            renderSection('postDecant', 'postDecantChecks');
+
+            totalChecks = Object.values(checklistData).reduce((sum, arr) => sum + arr.length, 0);
+            document.getElementById('totalCount').textContent = totalChecks;
+
+            // Lock all checklist sections initially
+            lockChecklistSections();
+
+            // Start timer
+            setInterval(updateTimer, 1000);
+            
+            // Check for time manipulation every 30 seconds
+            setInterval(detectTimeManipulation, 30000);
+            
+            // Add input listeners
+            document.getElementById('challanTime').addEventListener('change', checkChallanTime);
+            
+            // Prevent page unload if checklist in progress
+            window.addEventListener('beforeunload', (e) => {
+                if (Object.keys(checkStates).length > 0 && Object.keys(checkStates).length < totalChecks) {
+                    e.preventDefault();
+                    e.returnValue = 'चेकलिस्ट पूर्ण नहीं हुई है। क्या आप वाकई छोड़ना चाहते हैं?';
+                }
+            });
+        }
+
+        function checkChallanTime() {
+            const challanTime = document.getElementById('challanTime').value;
+            if (challanTime) {
+                document.getElementById('startTimerBtn').disabled = false;
+            }
+        }
+
+        function lockChecklistSections() {
+            const sections = document.querySelectorAll('.checklist-section');
+            sections.forEach(section => {
+                section.classList.add('locked');
+            });
+
+            // Add locked overlay message
+            const firstSection = document.getElementById('preDecantChecks').parentElement;
+            if (!document.getElementById('lockedMessage')) {
+                const overlay = document.createElement('div');
+                overlay.className = 'locked-overlay';
+                overlay.id = 'lockedMessage';
+                overlay.innerHTML = `
+                    <h4>🔒 चेकलिस्ट लॉक है / Checklist is Locked</h4>
+                    <p>कृपया पहले 10 मिनट की प्रतीक्षा अवधि पूरी करें<br>
+                    <em>Please complete the mandatory 10-minute waiting period first</em></p>
+                `;
+                firstSection.insertBefore(overlay, firstSection.firstChild);
+            }
+        }
+
+        function unlockChecklistSections() {
+            const sections = document.querySelectorAll('.checklist-section');
+            sections.forEach(section => {
+                section.classList.remove('locked');
+            });
+
+            // Remove locked overlay
+            const overlay = document.getElementById('lockedMessage');
+            if (overlay) {
+                overlay.remove();
+            }
+
+            // Enable first check item
+            enableNextCheck(0);
+        }
+
+        function startWaitingTimer() {
+            const challanTime = document.getElementById('challanTime').value;
+            if (!challanTime) {
+                showAlert('कृपया पहले चालान समय दर्ज करें! / Please enter challan time first!', 'danger');
+                return;
+            }
+
+            // Disable start button
+            document.getElementById('startTimerBtn').disabled = true;
+            waitingStartTime = Date.now();
+
+            // Show status
+            const statusDiv = document.getElementById('timerStatus');
+            statusDiv.className = 'timer-status waiting';
+            statusDiv.innerHTML = '⏳ प्रतीक्षा अवधि प्रगति में... / Waiting period in progress...';
+
+            // Start countdown
+            waitingTimerInterval = setInterval(updateWaitingTimer, 1000);
+            updateWaitingTimer(); // Initial update
+        }
+
+        function updateWaitingTimer() {
+            const elapsed = Math.floor((Date.now() - waitingStartTime) / 1000);
+            const remaining = WAITING_DURATION - elapsed;
+
+            if (remaining <= 0) {
+                // Timer complete
+                clearInterval(waitingTimerInterval);
+                completeWaitingPeriod();
+                return;
+            }
+
+            // Update display
+            const minutes = Math.floor(remaining / 60);
+            const seconds = remaining % 60;
+            const display = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            document.getElementById('countdownDisplay').textContent = display;
+
+            // Update progress bar
+            const progress = ((WAITING_DURATION - remaining) / WAITING_DURATION) * 100;
+            document.getElementById('timerProgressFill').style.width = `${progress}%`;
+        }
+
+        function completeWaitingPeriod() {
+            waitingComplete = true;
+
+            // Update display
+            const countdownDisplay = document.getElementById('countdownDisplay');
+            countdownDisplay.textContent = '00:00';
+            countdownDisplay.classList.add('complete');
+
+            // Update progress
+            document.getElementById('timerProgressFill').style.width = '100%';
+
+            // Update status
+            const statusDiv = document.getElementById('timerStatus');
+            statusDiv.className = 'timer-status complete';
+            statusDiv.innerHTML = '✅ प्रतीक्षा अवधि पूर्ण! अब डीकैन्टेशन शुरू कर सकते हैं<br><em>Waiting period complete! You may now start decantation</em>';
+
+            // Unlock checklist
+            unlockChecklistSections();
+
+            // Show success alert
+            showAlert('✅ 10 मिनट की प्रतीक्षा अवधि पूर्ण! अब आप चेकलिस्ट शुरू कर सकते हैं / 10-minute waiting period complete! You may now start the checklist', 'success');
+        }
+
+        function renderSection(sectionKey, containerId) {
+            const container = document.getElementById(containerId);
+            checklistData[sectionKey].forEach((item, index) => {
+                const checkId = `${sectionKey}-${index}`;
+                const globalIndex = currentCheckIndex++;
+                
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'check-item';
+                itemDiv.id = checkId;
+                itemDiv.setAttribute('data-index', globalIndex);
+                
+                itemDiv.innerHTML = `
+                    <div class="check-icon">${item.icon}</div>
+                    <div class="check-number" data-number="${globalIndex + 1}"></div>
+                    <div class="check-content">
+                        <div class="check-text">${item.text}</div>
+                        <div class="check-english">${item.en}</div>
+                        <div class="timestamp" id="${checkId}-time"></div>
+                    </div>
+                    <div class="check-status">
+                        <div class="yes-no-btns">
+                            <button class="yes-btn" onclick="markCheck('${checkId}', true)" ${globalIndex > 0 ? 'disabled' : ''}>हाँ / Yes</button>
+                            <button class="no-btn" onclick="markCheck('${checkId}', false)" ${globalIndex > 0 ? 'disabled' : ''}>नहीं / No</button>
+                        </div>
+                        <div class="timer-display" id="${checkId}-timer"></div>
+                    </div>
+                `;
+                
+                container.appendChild(itemDiv);
+            });
+        }
+
+        function markCheck(checkId, isYes) {
+            const item = document.getElementById(checkId);
+            const currentIndex = parseInt(item.getAttribute('data-index'));
+            
+            // Check if this is the current active item
+            const completedCount = Object.keys(checkStates).length;
+            if (currentIndex !== completedCount) {
+                showAlert('कृपया जांच क्रमानुसार पूरी करें!', 'warning');
+                return;
+            }
+
+            if (!isYes) {
+                showAlert('इस आइटम को पूरा करने से पहले समस्या का समाधान करें!', 'danger');
+                return;
+            }
+
+            // Record check
+            const timestamp = new Date();
+            checkStates[checkId] = true;
+            checkTimestamps[checkId] = timestamp.toISOString();
+            
+            // Update UI
+            item.classList.add('checked');
+            const timeDisplay = document.getElementById(`${checkId}-time`);
+            timeDisplay.textContent = `✓ पूर्ण: ${timestamp.toLocaleTimeString('hi-IN')}`;
+            
+            // Disable buttons for this item
+            const buttons = item.querySelectorAll('button');
+            buttons.forEach(btn => btn.disabled = true);
+            
+            // Enable next item buttons
+            enableNextCheck(currentIndex + 1);
+            
+            // Update progress
+            updateProgress();
+        }
+
+        function enableNextCheck(nextIndex) {
+            const allItems = document.querySelectorAll('.check-item');
+            allItems.forEach(item => {
+                const itemIndex = parseInt(item.getAttribute('data-index'));
+                if (itemIndex === nextIndex) {
+                    const buttons = item.querySelectorAll('button');
+                    buttons.forEach(btn => btn.disabled = false);
+                }
+            });
+        }
+
+        function updateProgress() {
+            const completed = Object.keys(checkStates).length;
+            const percentage = Math.round((completed / totalChecks) * 100);
+            
+            document.getElementById('progressFill').style.width = `${percentage}%`;
+            document.getElementById('progressFill').textContent = `${percentage}%`;
+            document.getElementById('completedCount').textContent = completed;
+            
+            // Update submit button
+            updateSubmitButton();
+        }
+
+        function updateSubmitButton() {
+            const completed = Object.keys(checkStates).length;
+            const allFieldsFilled = validateForm();
+            const submitBtn = document.getElementById('submitBtn');
+            const whatsappBtn = document.getElementById('whatsappBtn');
+            
+            const canSubmit = (completed === totalChecks && allFieldsFilled && waitingComplete);
+            
+            submitBtn.disabled = !canSubmit;
+            whatsappBtn.disabled = !canSubmit;
+        }
+
+        function validateForm() {
+            const fields = ['outletName', 'invoiceNo', 'date', 'serialNo', 'challanTime', 'arrivalTime', 'driverName', 'driverSign', 'dealerName', 'dealerSign'];
+            const fieldsValid = fields.every(field => document.getElementById(field).value.trim() !== '');
+            const photosValid = allPhotosUploaded();
+            
+            return fieldsValid && photosValid;
+        }
+
+        function updateTimer() {
+            const elapsed = Date.now() - startTime;
+            const hours = Math.floor(elapsed / 3600000);
+            const minutes = Math.floor((elapsed % 3600000) / 60000);
+            const seconds = Math.floor((elapsed % 60000) / 1000);
+            
+            document.getElementById('elapsedTime').textContent = 
+                `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        function submitChecklist() {
+            if (!waitingComplete) {
+                showAlert('कृपया पहले 10 मिनट की प्रतीक्षा अवधि पूरी करें! / Please complete the 10-minute waiting period first!', 'danger');
+                return;
+            }
+
+            if (!allPhotosUploaded()) {
+                showAlert('कृपया सभी 4 फोटो अपलोड करें! / Please upload all 4 required photos!', 'danger');
+                return;
+            }
+
+            if (!validateForm()) {
+                showAlert('कृपया सभी आवश्यक फ़ील्ड भरें!', 'danger');
+                return;
+            }
+
+            if (Object.keys(checkStates).length !== totalChecks) {
+                showAlert('कृपया सभी जांच पूर्ण करें!', 'danger');
+                return;
+            }
+
+            // Generate reference ID
+            const refId = 'HPCL-' + Date.now().toString(36).toUpperCase();
+            document.getElementById('referenceId').textContent = refId;
+
+            // Save complete record
+            const record = {
+                referenceId: refId,
+                sessionId: sessionId,
+                submittedAt: new Date().toISOString(),
+                outletName: document.getElementById('outletName').value,
+                invoiceNo: document.getElementById('invoiceNo').value,
+                date: document.getElementById('date').value,
+                serialNo: document.getElementById('serialNo').value,
+                challanTime: document.getElementById('challanTime').value,
+                arrivalTime: document.getElementById('arrivalTime').value,
+                waitingPeriodCompleted: waitingComplete,
+                waitingPeriodDuration: '10:00',
+                gpsLocation: gpsLocation,
+                photos: uploadedPhotos,
+                photoCount: Object.keys(uploadedPhotos).length,
+                driver: {
+                    name: document.getElementById('driverName').value,
+                    signature: document.getElementById('driverSign').value
+                },
+                dealer: {
+                    name: document.getElementById('dealerName').value,
+                    signature: document.getElementById('dealerSign').value
+                },
+                checks: checkStates,
+                timestamps: checkTimestamps,
+                totalTime: document.getElementById('elapsedTime').textContent,
+                antiTampering: {
+                    pageLoadTime: new Date(pageLoadTime).toISOString(),
+                    submitTime: new Date().toISOString(),
+                    userAgent: navigator.userAgent
+                }
+            };
+
+            // Save to localStorage
+            let records = JSON.parse(localStorage.getItem('hpclChecklists')) || [];
+            records.push(record);
+            localStorage.setItem('hpclChecklists', JSON.stringify(records));
+
+            // Show success modal
+            document.getElementById('successModal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('successModal').classList.remove('show');
+            if (confirm('क्या आप नई चेकलिस्ट शुरू करना चाहते हैं?')) {
+                location.reload();
+            }
+        }
+
+        function printChecklist() {
+            // Add print timestamp
+            const printTime = new Date().toLocaleString('hi-IN', {
+                dateStyle: 'full',
+                timeStyle: 'medium'
+            });
+
+            // Create print info
+            const printInfo = document.createElement('div');
+            printInfo.id = 'printInfo';
+            printInfo.style.cssText = 'display: none; padding: 15px; background: #f9f9f9; border: 2px solid #e31e24; margin: 20px; text-align: center;';
+            printInfo.innerHTML = `
+                <p style="margin: 5px 0; font-weight: bold;">प्रिंट किया गया: ${printTime}</p>
+                <p style="margin: 5px 0; font-size: 0.9em;">यह एक सत्यापित और टाइमस्टैम्प वाली डिजिटल चेकलिस्ट है</p>
+                <p style="margin: 5px 0; font-size: 0.85em;">This is a verified and timestamped digital checklist</p>
+            `;
+
+            // Show print info only during print
+            const style = document.createElement('style');
+            style.innerHTML = `
+                @media print {
+                    #printInfo {
+                        display: block !important;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            document.querySelector('.container').insertBefore(printInfo, document.querySelector('.info-section'));
+
+            // Trigger print
+            window.print();
+
+            // Cleanup
+            setTimeout(() => {
+                if (printInfo.parentNode) {
+                    printInfo.parentNode.removeChild(printInfo);
+                }
+                if (style.parentNode) {
+                    style.parentNode.removeChild(style);
+                }
+            }, 1000);
+        }
+
+        function exportData() {
+            const records = JSON.parse(localStorage.getItem('hpclChecklists')) || [];
+            if (records.length === 0) {
+                showAlert('एक्सपोर्ट करने के लिए कोई डेटा नहीं!', 'warning');
+                return;
+            }
+
+            const dataStr = JSON.stringify(records, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `HPCL_Checklists_${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function showAlert(message, type) {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.className = `alert alert-${type} show`;
+            alertBox.textContent = message;
+            
+            setTimeout(() => {
+                alertBox.classList.remove('show');
+            }, 5000);
+        }
+
+        // Add input listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('input', updateSubmitButton);
+            });
+        });
+
+        // Initialize
+        initializeChecklist();
+    </script>
+</body>
+</html>
